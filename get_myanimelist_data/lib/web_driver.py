@@ -17,9 +17,9 @@ from lib.logging_config import logger
 
 class WebDriver:
     default_option_list = [
-        # '--window-size=1920,1080',
-        # '--headless=new',
-        # '--no-sandbox',
+        '--window-size=1920,1080',
+        '--headless=new',
+        '--no-sandbox',
         '--enable-extensions'
         '--allow-extensions-in-incognito',
         '--disable-dev-shm-usage',
