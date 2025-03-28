@@ -78,11 +78,12 @@ python get_myanimelist_data/main.py --rank 0-2000 --mode rank
 
 ### **Neo4j Cypher Queries**
 1. Start your Neo4j database and ensure it’s running
-2. Import CSV data from `data/neo4j/*.csv`
+2. Import CSV data from `data/neo4j/*.csv` using [create_tables.cypher](./cipher_queries/create_tables.cypher)
 3. Use Cypher queries to analyze the data
+- For more details, please refer to [neo4j.md](neo4j.md)
 
 **Example Query**
-Find the most popular anime genres:
+- Find the most popular anime genres:
     ```cypher
     MATCH (a:Anime)-[:HAS_GENRE]->(g:Genre)
     RETURN g.name, COUNT(DISTINCT a.anime_id) AS anime_count

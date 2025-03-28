@@ -3,5 +3,5 @@ WHERE NOT EXISTS
 {
     MATCH (p)<-[:PRODUCED_BY]-(anime2:Anime)-[:PRODUCED_BY_STUDIO]->(:Studio {name:'Animation Do'}) 
 }
-RETURN p.name, s.name, COUNT(DISTINCT anime.anime_id) AS no_of_anime
+RETURN p.name as producer, s.name as studio, COUNT(DISTINCT anime.anime_id) AS no_of_anime
 ORDER BY no_of_anime DESC
