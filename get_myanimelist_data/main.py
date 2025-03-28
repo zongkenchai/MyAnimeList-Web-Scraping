@@ -1,3 +1,4 @@
+#* Description: Main script to get the data from MyAnimeList
 import logging
 import polars as pl
 import time
@@ -24,14 +25,17 @@ if __name__ == "__main__":
                              action='store',
                              required=True)
     args_parser.add_argument("--mode",
-                             help="Whether to get the list of rank or not",
+                             help="- all: Get both the rank and the detail information\n"
+                                  "- rank: Get the rank information only\n"
+                                  "- detail: Get the detail information only",
                              dest='mode',
                              choices=['all', 'rank', 'detail'],
                              default='all',
                              action='store',
                              required=False)
+    
 
-
+    #* Parsing the arguments
     args = args_parser.parse_args()
     if args.rank is not None:
         if '-' in args.rank:
@@ -42,6 +46,7 @@ if __name__ == "__main__":
     mode = args.mode
 
 
+    #* Set paths to the folder
     root_dir = os.getcwd()
     data_folder = os.path.join(root_dir, 'data')
     raw_folder = os.path.join(data_folder, 'raw')
@@ -56,11 +61,13 @@ if __name__ == "__main__":
         os.makedirs(output_folder)
 
     
+    #* Get the list of page to process
     page_limit_list = [i for i in range(lower_rank,upper_rank,50)]
     logger.debug(f'Page Limit List: {page_limit_list}')
     web_driver = WebDriver()
     web_driver.start_driver()
 
+    #* Get the list of anime between the rank specified
     if mode == 'all' or mode == 'rank':
         for page_limit in page_limit_list:
             raw_file_name = f'{page_limit}_{page_limit+50}.feather'
@@ -76,12 +83,11 @@ if __name__ == "__main__":
 
         logger.info('Completed saving of the rank file')
 
-
+    #* Get the detail information for a specific anime
     if mode == 'all' or mode == 'detail':
         logger.info('Getting Detail Information')
         raw_df = pl.concat([pl.read_ipc(file) for file in Path(raw_folder).glob("*.feather")])
 
-        # Deduplicate, filter, and sort
         raw_df = (
             raw_df.unique(subset=["rank", "name"])
             .filter((pl.col("rank") >= lower_rank) & (pl.col("rank") <= upper_rank))
@@ -89,20 +95,17 @@ if __name__ == "__main__":
         )
 
         logger.info(raw_df)
-        
-        # Get total rows
         no_of_rows = raw_df.height  
 
         for start in range(0, no_of_rows, chunk_size):
             detail_file_name = f"{start}_{start + chunk_size}.feather"
             detail_save_path = os.path.join(output_folder, detail_file_name)
 
-            # Get chunk
             tmp_df = raw_df.slice(start, chunk_size)  
 
             details = []
 
-            for row in tmp_df.iter_rows(named=True):  # Iterate as dictionaries
+            for row in tmp_df.iter_rows(named=True):
                 rank = row["rank"]
                 link = row["link"]
                 logger.info(f"Getting Detail for {rank}")
@@ -111,14 +114,13 @@ if __name__ == "__main__":
                     driver=web_driver.driver, anime_link=link, rank=rank
                 )
 
-                # Merge detail_dict into row
                 row.update({k: v for k, v in detail_dict})
 
                 details.append(row)
                 time.sleep(10)
 
-            # Convert to Polars DataFrame and save
             pl.DataFrame(details).write_ipc(detail_save_path)
         
+    
     web_driver.driver.quit()
     web_driver.driver = None

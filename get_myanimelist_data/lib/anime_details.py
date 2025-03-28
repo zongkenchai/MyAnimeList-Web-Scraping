@@ -1,10 +1,27 @@
 import pandas as pd
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
 from lib.logging_config import logger
 
 class AnimeDetail:
+    """_summary_
+    To get the details of the anime from a specific anime page.    
+
+    Returns:
+        VOID
+    """
     @staticmethod
-    def obtain_anime_detail(driver, anime_link:str, rank:int):
+    def obtain_anime_detail(driver:WebDriver, anime_link:str)->list:
+        """_summary_
+
+        Args:
+            driver (Webdriver): The web driver to use
+            anime_link (str): Link of the anime
+
+        Returns:
+            list(tuple):  containing the information of the anime (column name, value)
+        """
+        
         driver.get(anime_link)
         
         section = [i.text for i in driver.find_elements(by=By.XPATH,value="//div[@class='leftside']//h2")]
