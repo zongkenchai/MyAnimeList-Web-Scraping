@@ -1,0 +1,5 @@
+MATCH (n)
+DETACH DELETE n;
+
+SHOW INDEXES;
+DROP INDEX anime_id_index;
