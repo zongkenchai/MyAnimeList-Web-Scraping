@@ -1,0 +1,12 @@
+name: myanimelist_project
+channels:
+  - defaults
+dependencies:
+  - python=3.13.2
+  - pandas=2.2.3
+  - pyarrow=19.0.0
+  - polars=1.24.0
+  - pip:
+    - undetected-chromedriver==3.5.5
+    - setuptools==75.8.2
+prefix: /home/zongken/miniconda3/envs/myanimelist_project
