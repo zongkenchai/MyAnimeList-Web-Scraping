@@ -3,6 +3,7 @@ A web scraping tool that extracts anime data from MyAnimeList and provides insig
 
 ## **Table of Contents**  
 - [Overview](#overview)  
+- [Report](#report)  
 - [Installation](#installation)  
 - [Usage](#usage)  
   - [Running the Web Scraper](#running-the-web-scraper)  
@@ -18,6 +19,10 @@ This project scrapes anime data from MyAnimeList using **Python** and **Selenium
 ✅ Provides a **Power BI report** for analysis  
 ✅ Supports **Neo4j Cypher queries** for graph-based exploration  
 
+## **Report**  
+<img src="static/report_1.png" alt="Sample Report"/>
+<img src="static/report_2.png" alt="Sample Report"/>
+<img src="static/report_3.png" alt="Sample Report"/>
 
 ## **Installation**  
 
